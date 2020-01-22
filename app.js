@@ -59,7 +59,7 @@ app.get('/callback', function(req, res) {
     }
   ).then(
     function(api){
-      api.removeFromMySavedTracks(["01jIO8SJFnpSiNLH1JaBZ5"])
+      api.removeFromMySavedTracks(["song-id"])
       .then(function(data) {
         console.log('Removed!');
         res.redirect('/#');
