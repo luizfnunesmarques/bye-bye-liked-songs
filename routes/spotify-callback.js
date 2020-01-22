@@ -7,7 +7,7 @@ router.get('/', function(req, res) {
   const credentials = {
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    redirectUri: process.env.REDIRECT_URI
+    redirectUri: process.env.REDIRECT_URI,
   };
 
   const spotifyApi = new spotifyWebApi(credentials);
@@ -15,10 +15,10 @@ router.get('/', function(req, res) {
   const retrieveTrack = function(tracks) {
     const removeList = [];
     for (let track of tracks) {
-      const id = track["track"]["id"]
-      removeList.push(id)
+      const id = track['track']['id'];
+      removeList.push(id);
     };
-    return removeList
+    return removeList;
   };
   spotifyApi.authorizationCodeGrant(code)
     .then(
@@ -26,29 +26,29 @@ router.get('/', function(req, res) {
         spotifyApi.setAccessToken(data.body['access_token']);
         spotifyApi.setRefreshToken(data.body['refresh_token']);
         spotifyApi.getMySavedTracks({
-          limit : 10,
-          offset: 0
+          limit: 10,
+          offset: 0,
         })
-        .then(
-          function(data) {
-            const trackIds = retrieveTrack(data["body"]["items"]);
-            console.log(trackIds);
-            spotifyApi.removeFromMySavedTracks(trackIds)
-              .then(
-                function(data) {
-                console.log('Removed!');
-              }, function(err) {
-                console.log('Something went wrong!', err);
-              });
-          },
-        function(err) {
-          console.log('Something went wrong!', err);
-        });
+          .then(
+            function(data) {
+              const trackIds = retrieveTrack(data['body']['items']);
+              console.log(trackIds);
+              spotifyApi.removeFromMySavedTracks(trackIds)
+                .then(
+                  function(data) {
+                    console.log('Removed!');
+                  }, function(err) {
+                    console.log('Something went wrong!', err);
+                  });
+            },
+            function(err) {
+              console.log('Something went wrong!', err);
+            });
       },
-    function(err) {
-      res.redirect('/#');
-    }
-  )
+      function(err) {
+        res.redirect('/#');
+      },
+    );
 });
 
 module.exports = router;
