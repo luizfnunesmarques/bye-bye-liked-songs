@@ -1,30 +1,25 @@
 var express = require('express');
 var router = express.Router();
 var spotifyWebApi = require('spotify-web-api-node');
-var clientId = 'ommited';
-var redirectUri = 'http://localhost:8888/callback';
-var clientSecret = 'ommited';
-
-var retrieveTrack = function(tracks) {
-  const removeList = [];
-  for (let track of tracks) {
-    const id = track["track"]["id"]
-    removeList.push(id)
-  };
-  return removeList
-};
 
 router.get('/', function(req, res) {
   const code = req.query.code || null;
-
   const credentials = {
-    clientId: clientId,
-    clientSecret: clientSecret,
-    redirectUri: redirectUri
+    clientId: process.env.SPOTIFY_CLIENT_ID,
+    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+    redirectUri: process.env.REDIRECT_URI
   };
 
   const spotifyApi = new spotifyWebApi(credentials);
 
+  const retrieveTrack = function(tracks) {
+    const removeList = [];
+    for (let track of tracks) {
+      const id = track["track"]["id"]
+      removeList.push(id)
+    };
+    return removeList
+  };
   spotifyApi.authorizationCodeGrant(code)
     .then(
       function(data) {
